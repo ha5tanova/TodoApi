@@ -6,6 +6,8 @@ namespace TodoApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+
+
 public class TodoItemsController : ControllerBase
 {
     private readonly TodoContext _context;
@@ -15,13 +17,14 @@ public class TodoItemsController : ControllerBase
         _context = context;
     }
 
+    
+
     // GET: api/TodoItems
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TodoItemDTO>>> GetTodoItems()
     {
-        return await _context.TodoItems
-            .Select(x => ItemToDTO(x))
-            .ToListAsync();
+        return await _context.TodoItems.Select(x => ItemToDTO(x)).ToListAsync();
+
     }
 
     // GET: api/TodoItems/5
@@ -76,7 +79,7 @@ public class TodoItemsController : ControllerBase
     // POST: api/TodoItems
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     // <snippet_Create>
-    [HttpPost]
+  [HttpPost]
     public async Task<ActionResult<TodoItemDTO>> PostTodoItem(TodoItemDTO todoDTO)
     {
         var todoItem = new TodoItem
@@ -93,6 +96,17 @@ public class TodoItemsController : ControllerBase
             new { id = todoItem.Id },
             ItemToDTO(todoItem));
     }
+
+    [HttpPost]
+    public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
+    {
+        _context.TodoItems.Add(todoItem);
+        await _context.SaveChangesAsync();
+
+        //    return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
+        return CreatedAtAction(nameof(GetTodoItem), new { id = todoItem.Id }, todoItem);
+    }
+
     // </snippet_Create>
 
     // DELETE: api/TodoItems/5
@@ -126,3 +140,15 @@ public class TodoItemsController : ControllerBase
 }
 
 
+
+
+/*
+ 
+private readonly ApplicationDbContext _context;
+
+    public TodoItemsController(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+ 
+ */
